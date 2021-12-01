@@ -1,4 +1,4 @@
-package com.example.tensorflowlite_android_cpp_example;
+package io.seeso.example;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
   public void useAppContext() {
     // Context of the app under test.
     Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-    assertEquals("com.example.tensorflowlite_android_cpp_example", appContext.getPackageName());
+    assertEquals("io.seeso.example", appContext.getPackageName());
   }
 }

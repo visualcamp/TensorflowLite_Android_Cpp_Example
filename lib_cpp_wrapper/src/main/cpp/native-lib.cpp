@@ -16,7 +16,7 @@ inline seeso::Detector* detector(jlong obj) {
 }
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_com_example_lib_1cpp_1wrapper_Detector_stringFromJNI
+Java_io_seeso_lib_1cpp_1wrapper_Detector_stringFromJNI
     (JNIEnv* env, jobject thiz)
 {
   std::string hello = "Hello from C++";
@@ -25,7 +25,7 @@ Java_com_example_lib_1cpp_1wrapper_Detector_stringFromJNI
 }
 
 extern "C" JNIEXPORT jlong JNICALL
-Java_com_example_lib_1cpp_1wrapper_Detector_nativeDetector
+Java_io_seeso_lib_1cpp_1wrapper_Detector_nativeDetector
     (JNIEnv* env, jobject thiz)
 {
   static_assert(sizeof(jlong) >= sizeof(intptr_t), "intptr_t must be representable with jlong");
@@ -33,15 +33,14 @@ Java_com_example_lib_1cpp_1wrapper_Detector_nativeDetector
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_com_example_lib_1cpp_1wrapper_Detector_nativeDetectorDelete
+Java_io_seeso_lib_1cpp_1wrapper_Detector_nativeDetectorDelete
     (JNIEnv* env, jobject thiz, jlong obj)
 {
   delete detector(obj);
 }
 
-extern "C"
-JNIEXPORT jboolean JNICALL
-Java_com_example_lib_1cpp_1wrapper_Detector_nativeDetectorLoadModel
+extern "C" JNIEXPORT jboolean JNICALL
+Java_io_seeso_lib_1cpp_1wrapper_Detector_nativeDetectorLoadModel
     (JNIEnv* env, jobject thiz, jlong obj, jbyteArray buffer, jlong buffer_size)
 {
   jboolean isCopy;
@@ -53,4 +52,54 @@ Java_com_example_lib_1cpp_1wrapper_Detector_nativeDetectorLoadModel
   }
 
   return success;
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_io_seeso_lib_1cpp_1wrapper_Detector_nativeBuildInterpreter
+    (JNIEnv* env, jobject thiz, jlong obj)
+{
+  detector(obj)->buildInterpreter();
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_io_seeso_lib_1cpp_1wrapper_Detector_nativeResetInterpreter
+    (JNIEnv* env, jobject thiz, jlong obj)
+{
+  detector(obj)->resetInterpreter();
+}
+
+extern "C" JNIEXPORT jboolean JNICALL
+Java_io_seeso_lib_1cpp_1wrapper_Detector_nativeIsProcessing
+    (JNIEnv* env, jobject thiz, jlong obj)
+{
+  return true;
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_io_seeso_lib_1cpp_1wrapper_Detector_nativeSetUseCPU
+    (JNIEnv* env, jobject thiz, jlong obj)
+{
+  detector(obj)->setUseCPU();
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_io_seeso_lib_1cpp_1wrapper_Detector_nativeSetUseGPU
+    (JNIEnv* env, jobject thiz, jlong obj)
+{
+  detector(obj)->setUseGpu();
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_io_seeso_lib_1cpp_1wrapper_Detector_nativeSetUseNnApi
+    (JNIEnv* env, jobject thiz, jlong obj)
+{
+  detector(obj)->setUseNnApi();
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_io_seeso_lib_1cpp_1wrapper_Detector_nativeSetCpuNumthreads
+    (JNIEnv* env, jobject thiz, jlong obj, jint num)
+{
+  detector(obj)->setNumThreads(num);
 }

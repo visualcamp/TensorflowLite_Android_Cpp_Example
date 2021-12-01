@@ -1,4 +1,4 @@
-package com.example.tensorflowlite_android_cpp_example;
+package io.seeso.example;
 
 import org.junit.Test;
 
