@@ -8,3 +8,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "TensorflowLite_Android_Cpp_Example"
 include ':app'
+include ':lib_cpp_wrapper'

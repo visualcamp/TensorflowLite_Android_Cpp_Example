@@ -10,7 +10,9 @@ set(THIRD_PARTY_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third_party")
 
 add_library(tensorflowlite_android_cpp_example
         SHARED
-        native-lib.cpp)
+        native-lib.cpp
+        detector.cc
+        )
 
 
 find_library(log-lib log)

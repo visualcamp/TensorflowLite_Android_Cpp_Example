@@ -4,8 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.tensorflowlite_android_cpp_example.databinding.ActivityMainBinding;
+
+import com.example.lib_cpp_wrapper.Detector;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
   
@@ -25,12 +30,15 @@ public class MainActivity extends AppCompatActivity {
     
     // Example of a call to a native method
     TextView tv = binding.sampleText;
-    tv.setText(stringFromJNI());
+    
+    Detector f = new Detector();
+    
+    try {
+      f.loadModel(this, "detect.tflite");
+    } catch (final IOException e) {
+      Toast.makeText(getApplicationContext(), "Failed to load model file", Toast.LENGTH_LONG).show();
+    }
+    
+    tv.setText(f.stringFromJNI());
   }
-  
-  /**
-   * A native method that is implemented by the 'tensorflowlite_android_cpp_example' native library,
-   * which is packaged with this application.
-   */
-  public native String stringFromJNI();
 }
