@@ -86,8 +86,11 @@ bool Detector::buildInterpreter() {
     nnapi_delegate_ = std::make_unique<tflite::StatefulNnApiDelegate>();
     interpreter_->ModifyGraphWithDelegate(nnapi_delegate_.get());
   } else if (build_type_ == kGPU) {
-    gpu_delegate_.reset(TfLiteGpuDelegateV2Create(&gpu_option));
+    gpu_delegate_.reset(TfLiteGpuDelegateV2Create(&gpu_options_));
     interpreter_->ModifyGraphWithDelegate(gpu_delegate_.get());
+  } else if (build_type_ == kXNNPack) {
+    xnn_delegate_.reset(TfLiteXNNPackDelegateCreate(&xnn_options_));
+    interpreter_->ModifyGraphWithDelegate(xnn_delegate_.get());
   }
 
   RETURN_FALSE_IF_TF_FAIL(interpreter_->AllocateTensors())
@@ -116,6 +119,10 @@ void Detector::setUseNnApi() {
 
 void Detector::setUseGpu() {
   build_type_ = kGPU;
+}
+
+void Detector::setUseXNNPack() {
+  build_type_ = kXNNPack;
 }
 
 int Detector::invoke() {

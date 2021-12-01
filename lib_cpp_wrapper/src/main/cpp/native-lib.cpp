@@ -98,6 +98,13 @@ Java_io_seeso_lib_1cpp_1wrapper_Detector_nativeSetUseNnApi
 }
 
 extern "C" JNIEXPORT void JNICALL
+Java_io_seeso_lib_1cpp_1wrapper_Detector_nativeSetUseXNNPack
+    (JNIEnv* env, jobject thiz, jlong obj)
+{
+  detector(obj)->setUseXNNPack();
+}
+
+extern "C" JNIEXPORT void JNICALL
 Java_io_seeso_lib_1cpp_1wrapper_Detector_nativeSetCpuNumthreads
     (JNIEnv* env, jobject thiz, jlong obj, jint num)
 {

@@ -64,6 +64,10 @@ public class Detector {
     nativeSetUseGPU(nativeObj);
     rebuildInterpreter();
   }
+  public void setUseXNNPack() {
+    nativeSetUseXNNPack(nativeObj);
+    rebuildInterpreter();
+  }
   
   public boolean isProcessing() {
     return nativeIsProcessing(nativeObj);
@@ -208,4 +212,5 @@ public class Detector {
   private native void nativeSetUseCPU(long obj);
   private native void nativeSetUseGPU(long obj);
   private native void nativeSetUseNnApi(long obj);
+  private native void nativeSetUseXNNPack(long obj);
 }

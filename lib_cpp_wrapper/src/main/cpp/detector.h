@@ -13,6 +13,7 @@
 
 #include "tensorflow/lite/c/common.h"
 #include "tensorflow/lite/delegates/gpu/delegate.h"
+#include "tensorflow/lite/delegates/xnnpack/xnnpack_delegate.h"
 #include "tensorflow/lite/interpreter.h"
 #include "tensorflow/lite/model_builder.h"
 #include "tensorflow/lite/kernels/register.h"
@@ -39,6 +40,8 @@ class Detector {
 
   void setUseGpu();
 
+  void setUseXNNPack();
+
   void setInput(std::size_t index, const void* data, std::size_t data_size);
 
   /**
@@ -62,14 +65,23 @@ class Detector {
     kCPU,
     kGPU,
     kNNAPI,
+    kXNNPack,
   };
 
   /// 'delegate' must outlive the interpreter.
+
+  // NNAPI
   std::unique_ptr<TfLiteDelegate> nnapi_delegate_;
 
+  // GPU
+  TfLiteGpuDelegateOptionsV2 gpu_options_ = TfLiteGpuDelegateOptionsV2Default();
   std::unique_ptr<TfLiteDelegate, decltype(&TfLiteGpuDelegateV2Delete)>
       gpu_delegate_{nullptr, &TfLiteGpuDelegateV2Delete};
-  TfLiteGpuDelegateOptionsV2 gpu_option = TfLiteGpuDelegateOptionsV2Default();
+
+  // XNNPack
+  TfLiteXNNPackDelegateOptions xnn_options_ = TfLiteXNNPackDelegateOptionsDefault();
+  std::unique_ptr<TfLiteDelegate, decltype(&TfLiteXNNPackDelegateDelete)>
+    xnn_delegate_{nullptr, &TfLiteXNNPackDelegateDelete};
 
   std::unique_ptr<tflite::FlatBufferModel> model_;
   tflite::ops::builtin::BuiltinOpResolver resolver_;
