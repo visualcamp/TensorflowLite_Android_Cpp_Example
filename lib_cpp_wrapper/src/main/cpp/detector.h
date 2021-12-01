@@ -72,8 +72,8 @@ class Detector {
   TfLiteGpuDelegateOptionsV2 gpu_option = TfLiteGpuDelegateOptionsV2Default();
 
   std::unique_ptr<tflite::FlatBufferModel> model_;
-  std::unique_ptr<tflite::Interpreter> interpreter_;
   tflite::ops::builtin::BuiltinOpResolver resolver_;
+  std::unique_ptr<tflite::Interpreter> interpreter_;
 
   int num_thread_ = 2;
   BUILD_TYPE build_type_ = kCPU;
