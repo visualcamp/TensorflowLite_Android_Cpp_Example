@@ -28,17 +28,17 @@ public class Detector {
     nativeObj = nativeDetector();
     
     loadModel(context, modelFileName);
-    
   }
   
-  public void loadModel(@NonNull Context context, @NonNull String modelFileName) throws IOException {
+  private void loadModel(@NonNull Context context, @NonNull String modelFileName) throws IOException {
     ByteBuffer buffer = readFile(context, modelFileName);
-    byte[] byteArray = new byte[buffer.remaining()];
-    buffer.get(byteArray);
-    nativeDetectorLoadModel(nativeObj, byteArray, byteArray.length);
+    modelBuffer = new byte[buffer.remaining()];
+    buffer.get(modelBuffer);
+    buildInterpreter();
   }
   
   public void buildInterpreter() {
+    nativeDetectorLoadModel(nativeObj, modelBuffer, modelBuffer.length);
     nativeBuildInterpreter(nativeObj);
   }
   
@@ -47,11 +47,23 @@ public class Detector {
     buildInterpreter();
   }
   
-  public void setNumThreads(int num) { nativeSetCpuNumthreads(nativeObj, num); }
+  public void setNumThreads(int num) {
+    nativeSetCpuNumthreads(nativeObj, num);
+    rebuildInterpreter();
+  }
   
-  public void setUseCPU()   { nativeSetUseCPU(nativeObj);   }
-  public void setUseNnAPI() { nativeSetUseNnApi(nativeObj); }
-  public void setUseGPU()   { nativeSetUseGPU(nativeObj);   }
+  public void setUseCPU() {
+    nativeSetUseCPU(nativeObj);
+    rebuildInterpreter();
+  }
+  public void setUseNnAPI() {
+    nativeSetUseNnApi(nativeObj);
+    rebuildInterpreter();
+  }
+  public void setUseGPU() {
+    nativeSetUseGPU(nativeObj);
+    rebuildInterpreter();
+  }
   
   public boolean isProcessing() {
     return nativeIsProcessing(nativeObj);
@@ -184,6 +196,7 @@ public class Detector {
   
   
   private long nativeObj = 0;
+  private byte[] modelBuffer;
   
   private native long nativeDetector();
   private native void nativeDetectorDelete(long obj);

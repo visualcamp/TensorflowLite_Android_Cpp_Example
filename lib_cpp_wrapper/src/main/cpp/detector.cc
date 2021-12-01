@@ -70,34 +70,8 @@ void PrintModelInfo(const tflite::Interpreter* interpreter) {
 } // anonymous namespace
 
 bool Detector::loadModel(const char* buffer, std::size_t buffer_size) {
-
-//  tflite::StatefulNnApiDelegate test(nullptr);
-
   model_ = tflite::FlatBufferModel::BuildFromBuffer(buffer, buffer_size);
   return model_ != nullptr;
-}
-
-void Detector::setLabels(const char* labels, std::size_t labels_size) {
-
-}
-
-void Detector::setNumThreads(int num) {
-  num_thread_ = num;
-  interpreter_->SetNumThreads(num_thread_);
-}
-
-void Detector::setUseCPU() {
-  build_type_ = kCPU;
-}
-
-void Detector::setUseNnApi() {
-  nnapi_delegate_ = std::make_unique<tflite::StatefulNnApiDelegate>();
-  build_type_ = kCPU;
-}
-
-void Detector::setUseGpu() {
-  gpu_delegate_.reset(TfLiteGpuDelegateV2Create(&gpu_option));
-  build_type_ = kGPU;
 }
 
 void Detector::resetInterpreter() {
@@ -106,7 +80,18 @@ void Detector::resetInterpreter() {
 
 bool Detector::buildInterpreter() {
   RETURN_FALSE_IF_TF_FAIL(tflite::InterpreterBuilder(*model_, resolver_)(&interpreter_))
+  interpreter_->SetNumThreads(num_thread_);
+
+  if (build_type_ == kNNAPI) {
+    nnapi_delegate_ = std::make_unique<tflite::StatefulNnApiDelegate>();
+    interpreter_->ModifyGraphWithDelegate(nnapi_delegate_.get());
+  } else if (build_type_ == kGPU) {
+    gpu_delegate_.reset(TfLiteGpuDelegateV2Create(&gpu_option));
+    interpreter_->ModifyGraphWithDelegate(gpu_delegate_.get());
+  }
+
   RETURN_FALSE_IF_TF_FAIL(interpreter_->AllocateTensors())
+
 
   PrintModelInfo(interpreter_.get());
 
@@ -115,6 +100,22 @@ bool Detector::buildInterpreter() {
 
 void Detector::setInput(std::size_t index, const void* data, std::size_t data_size) {
   std::memcpy(interpreter_->input_tensor(index)->data.data, data, data_size);
+}
+
+void Detector::setNumThreads(int num) {
+  num_thread_ = num;
+}
+
+void Detector::setUseCPU() {
+  build_type_ = kCPU;
+}
+
+void Detector::setUseNnApi() {
+  build_type_ = kCPU;
+}
+
+void Detector::setUseGpu() {
+  build_type_ = kGPU;
 }
 
 int Detector::invoke() {
@@ -133,6 +134,10 @@ int Detector::invoke() {
 
 const Detector::Recognition Detector::getResult() const {
   return {};
+}
+
+void Detector::setLabels(const char* labels, std::size_t labels_size) {
+
 }
 
 } // namespace seeso

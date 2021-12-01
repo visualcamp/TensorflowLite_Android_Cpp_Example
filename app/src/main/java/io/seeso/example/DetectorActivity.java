@@ -78,8 +78,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     int cropSize = TF_OD_API_INPUT_SIZE;
     
     try {
-      detector = new Detector();
-      detector.loadModel(this, TF_OD_API_MODEL_FILE);
+      detector = new Detector(this, TF_OD_API_MODEL_FILE);
       cropSize = TF_OD_API_INPUT_SIZE;
     } catch (final IOException e) {
       e.printStackTrace();
@@ -137,7 +136,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
       return;
     }
     computingDetection = true;
-    LOGGER.i("Preparing image " + currTimestamp + " for detection in bg thread.");
+//    LOGGER.i("Preparing image " + currTimestamp + " for detection in bg thread.");
     
     rgbFrameBitmap.setPixels(getRgbBytes(), 0, previewWidth, 0, 0, previewWidth, previewHeight);
     
@@ -154,7 +153,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
       new Runnable() {
         @Override
         public void run() {
-          LOGGER.i("Running detection on image " + currTimestamp);
+//          LOGGER.i("Running detection on image " + currTimestamp);
           final long startTime = SystemClock.uptimeMillis();
           final List<Detector.Recognition> results = detector.recognizeImage(croppedBitmap);
           lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;

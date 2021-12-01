@@ -114,7 +114,7 @@ public class MultiBoxTracker {
   }
 
   public synchronized void trackResults(final List<Recognition> results, final long timestamp) {
-    logger.i("Processing %d results from %d", results.size(), timestamp);
+//    logger.i("Processing %d results from %d", results.size(), timestamp);
     processResults(results);
   }
 
