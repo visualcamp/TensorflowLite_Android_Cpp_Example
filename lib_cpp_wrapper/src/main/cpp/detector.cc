@@ -111,7 +111,7 @@ void Detector::setUseCPU() {
 }
 
 void Detector::setUseNnApi() {
-  build_type_ = kCPU;
+  build_type_ = kNNAPI;
 }
 
 void Detector::setUseGpu() {
