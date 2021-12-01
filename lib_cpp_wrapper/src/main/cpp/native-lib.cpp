@@ -105,7 +105,7 @@ Java_io_seeso_lib_1cpp_1wrapper_Detector_nativeSetUseXNNPack
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_io_seeso_lib_1cpp_1wrapper_Detector_nativeSetCpuNumthreads
+Java_io_seeso_lib_1cpp_1wrapper_Detector_nativeSetNumThreads
     (JNIEnv* env, jobject thiz, jlong obj, jint num)
 {
   detector(obj)->setNumThreads(num);

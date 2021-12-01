@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
-import android.media.Image;
 
 import androidx.annotation.NonNull;
 
@@ -48,7 +47,7 @@ public class Detector {
   }
   
   public void setNumThreads(int num) {
-    nativeSetCpuNumthreads(nativeObj, num);
+    nativeSetNumThreads(nativeObj, num);
     rebuildInterpreter();
   }
   
@@ -208,7 +207,7 @@ public class Detector {
   private native void nativeBuildInterpreter(long obj);
   private native void nativeResetInterpreter(long obj);
   private native boolean nativeIsProcessing(long obj);
-  private native void nativeSetCpuNumthreads(long obj, int num);
+  private native void nativeSetNumThreads(long obj, int num);
   private native void nativeSetUseCPU(long obj);
   private native void nativeSetUseGPU(long obj);
   private native void nativeSetUseNnApi(long obj);
