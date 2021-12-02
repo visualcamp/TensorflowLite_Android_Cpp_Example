@@ -195,6 +195,7 @@ public abstract class CameraActivity extends AppCompatActivity
     yuvBytes[0] = bytes;
     yRowStride = previewWidth;
 
+    // TODO(Tony): Convert image in C++
     imageConverter =
         new Runnable() {
           @Override

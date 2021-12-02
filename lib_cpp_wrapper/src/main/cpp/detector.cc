@@ -139,12 +139,17 @@ int Detector::invoke() {
   return chrono::duration_cast<chrono::milliseconds>(t2 - t1).count();
 }
 
-const Detector::Recognition Detector::getResult() const {
-  return {};
+std::size_t Detector::input_bytes(std::size_t index) const {
+  return interpreter_->input_tensor(index)->bytes;
 }
 
-void Detector::setLabels(const char* labels, std::size_t labels_size) {
 
+std::size_t Detector::output_bytes(std::size_t index) const {
+  return interpreter_->output_tensor(index)->bytes;
+}
+
+void Detector::copy_output(void* dst, std::size_t index) const {
+  std::memcpy(dst, interpreter_->output_tensor(index)->data.data, output_bytes(index));
 }
 
 } // namespace seeso

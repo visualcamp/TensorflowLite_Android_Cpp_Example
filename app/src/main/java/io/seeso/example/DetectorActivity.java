@@ -78,7 +78,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     int cropSize = TF_OD_API_INPUT_SIZE;
     
     try {
-      detector = new Detector(this, TF_OD_API_MODEL_FILE);
+      detector = new Detector(this, TF_OD_API_MODEL_FILE, TF_OD_API_LABELS_FILE);
       cropSize = TF_OD_API_INPUT_SIZE;
     } catch (final IOException e) {
       e.printStackTrace();

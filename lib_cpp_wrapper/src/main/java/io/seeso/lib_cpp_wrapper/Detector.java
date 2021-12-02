@@ -7,8 +7,10 @@ import android.graphics.RectF;
 
 import androidx.annotation.NonNull;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Detector {
+  private ArrayList<String> labels;
   
   static {
     System.loadLibrary("seeso_tfl_cpp_native");
@@ -23,17 +26,39 @@ public class Detector {
   
   public Detector() { nativeObj = nativeDetector(); }
   
-  public Detector(@NonNull Context context, @NonNull String modelFileName) throws IOException {
+  public Detector(
+    @NonNull Context context,
+    @NonNull String modelFileName,
+    @NonNull String labelFileName) throws IOException {
     nativeObj = nativeDetector();
     
     loadModel(context, modelFileName);
+    loadLabel(context, labelFileName);
   }
   
-  private void loadModel(@NonNull Context context, @NonNull String modelFileName) throws IOException {
+  private void loadModel(Context context, String modelFileName) throws IOException {
     ByteBuffer buffer = readFile(context, modelFileName);
     modelBuffer = new byte[buffer.remaining()];
     buffer.get(modelBuffer);
     buildInterpreter();
+  }
+  
+  private void loadLabel(Context context, String file) throws IOException {
+    BufferedReader reader = null;
+    try {
+      reader = new BufferedReader(
+        new InputStreamReader(context.getAssets().open(file)));
+  
+      labels = new ArrayList<>();
+      String line;
+      while ((line = reader.readLine()) != null) {
+        labels.add(line);
+      }
+    } finally {
+      if (reader != null) {
+        reader.close();
+      }
+    }
   }
   
   public void buildInterpreter() {
@@ -72,8 +97,44 @@ public class Detector {
     return nativeIsProcessing(nativeObj);
   }
   
+  private RectF getBoundingBox(float top, float left, float bottom, float right, int w, int h) {
+    RectF box = new RectF(left, top, right, bottom);
+    box.top *= h;
+    box.bottom *= h;
+    box.left *= w;
+    box.right *= w;
+    return box;
+  }
+  
+  // TODO(Tony): Pass raw image to C++
   public List<Recognition> recognizeImage(Bitmap image) {
+    final int width = image.getWidth();
+    final int height = image.getHeight();
+  
+    final int size = image.getRowBytes() * image.getHeight();
+    ByteBuffer byteBuffer = ByteBuffer.allocate(size);
+    image.copyPixelsToBuffer(byteBuffer);
+    
+    nativeAddImage(nativeObj, byteBuffer.array());
+    
+    nativeInvoke(nativeObj);
+    
+    final float[] locations = nativeGetOutput(nativeObj, 0);
+    final float[] classes = nativeGetOutput(nativeObj, 1);
+    final float[] scores = nativeGetOutput(nativeObj, 2);
+    final int numDetection = Math.round(nativeGetOutput(nativeObj, 3)[0]);
+    
     final ArrayList<Recognition> recognitions = new ArrayList<>();
+    
+    for (int i = 0; i < numDetection; ++i) {
+      recognitions.add(new Recognition(
+        "" + i,
+        labels.get(Math.round(classes[i])),
+        scores[i],
+        getBoundingBox(locations[i*4], locations[i*4 + 1], locations[i*4+2], locations[i*4 + 3], width, height)
+      ));
+    }
+    
     return recognitions;
   }
   
@@ -82,8 +143,6 @@ public class Detector {
   
     super.finalize();
   }
-  
-  public native String stringFromJNI();
   
   public class Recognition {
     /**
@@ -212,4 +271,8 @@ public class Detector {
   private native void nativeSetUseGPU(long obj);
   private native void nativeSetUseNnApi(long obj);
   private native void nativeSetUseXNNPack(long obj);
+  
+  private native void nativeAddImage(long obj, byte[] data);
+  private native void nativeInvoke(long obj);
+  private native float[] nativeGetOutput(long obj, int index);
 }

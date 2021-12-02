@@ -26,8 +26,6 @@ class Detector {
 
   bool loadModel(const char* buffer, std::size_t buffer_size);
 
-  void setLabels(const char* labels, std::size_t labels_size);
-
   bool buildInterpreter();
 
   void resetInterpreter();
@@ -50,14 +48,13 @@ class Detector {
    */
   int invoke();
 
-  struct Recognition {
-    const std::string id;
-    const std::string title;
-    const float confidence;
-    const float location[4];
-  };
+  std::size_t input_bytes(std::size_t index) const;
 
-  const Recognition getResult() const;
+  std::size_t output_bytes(std::size_t index) const;
+
+  void copy_output(void* dst, std::size_t index) const;
+
+
 
 
  private:
