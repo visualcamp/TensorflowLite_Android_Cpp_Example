@@ -6,7 +6,7 @@
         <item name="XNNPACK">XNNPACK</item>
     </string-array>
 
-    <string name="app_name">SeeSo_TFL_Cpp_Example</string>
+    <string name="app_name">TFL Detect C++</string>
     <string name="tfe_od_app_name" translation_description="Object Detection demo app [CHAR_LIMIT=40]">SeeSo Detect</string>
     <string name="tfe_od_camera_error" translation_description="Error regarding camera support[CHAR_LIMIT=40]">This device doesn\'t support Camera2 API.</string>
 </resources>
