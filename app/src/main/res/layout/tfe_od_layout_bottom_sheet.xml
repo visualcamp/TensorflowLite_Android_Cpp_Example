@@ -159,7 +159,7 @@
         android:background="@android:color/darker_gray" />
 
     <!-- TODO(b/112541284): Unhide when new NNAPI delegate is used. -->
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -173,14 +173,23 @@
             android:text="API"
             android:textColor="@android:color/black" />
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/api_info_switch"
-            android:layout_width="match_parent"
+        <Spinner
+            android:id="@+id/delegateSpinner"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_marginTop="10dp"
-            android:checked="false"
-            android:gravity="right"
-            android:text="TFLITE"
-            android:textColor="@android:color/black" />
-    </LinearLayout>
+            android:entries="@array/delegates" />
+
+        <!--        <androidx.appcompat.widget.SwitchCompat-->
+        <!--            android:id="@+id/api_info_switch"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginTop="10dp"-->
+        <!--            android:checked="false"-->
+        <!--            android:gravity="right"-->
+        <!--            android:text="TFLITE"-->
+        <!--            android:textColor="@android:color/black" />-->
+    </RelativeLayout>
 </LinearLayout>

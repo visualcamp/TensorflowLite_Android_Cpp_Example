@@ -30,6 +30,7 @@ import io.seeso.lib_cpp_wrapper.Detector;
  * objects.
  */
 public class DetectorActivity extends CameraActivity implements OnImageAvailableListener {
+  
   private static final Logger LOGGER = new Logger();
   
   // Configuration values for the prepackaged SSD model.
@@ -221,20 +222,43 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     TF_OD_API;
   }
   
-  @Override
-  protected void setUseNNAPI(final boolean isChecked) {
+  public interface DelegateInterface {
+    void run();
+  }
+  
+  protected void changeDelegates(DelegateInterface func, String name) {
     runInBackground(
       () -> {
         try {
-          detector.setUseNnAPI();
+          func.run();
         } catch (UnsupportedOperationException e) {
-          LOGGER.e(e, "Failed to set \"Use NNAPI\".");
+          LOGGER.e(e, "Failed to set \"Use " + name + "\".");
           runOnUiThread(
             () -> {
               Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
             });
         }
       });
+  }
+  
+  @Override
+  protected void setUseCPU() {
+    changeDelegates(() -> detector.setUseCPU(), "CPU");
+  }
+  
+  @Override
+  protected void setUseXNNPack() {
+    changeDelegates(() -> detector.setUseXNNPack(), "XNNPack");
+  }
+  
+  @Override
+  protected void setUseNNAPI() {
+    changeDelegates(() -> detector.setUseNnAPI(), "NNAPI");
+  }
+  
+  @Override
+  protected void setUseGPU() {
+    changeDelegates(() -> detector.setUseGPU(), "GPU");
   }
   
   @Override

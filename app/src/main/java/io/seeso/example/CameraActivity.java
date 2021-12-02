@@ -23,18 +23,16 @@ import android.view.Surface;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.widget.CompoundButton;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.appcompat.widget.Toolbar;
 
-import io.seeso.example.R;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import io.seeso.example.env.ImageUtils;
@@ -45,8 +43,8 @@ import java.nio.ByteBuffer;
 public abstract class CameraActivity extends AppCompatActivity
     implements OnImageAvailableListener,
         Camera.PreviewCallback,
-        CompoundButton.OnCheckedChangeListener,
-        View.OnClickListener {
+        View.OnClickListener,
+        AdapterView.OnItemSelectedListener {
   private static final Logger LOGGER = new Logger();
 
   private static final int PERMISSIONS_REQUEST = 1;
@@ -72,7 +70,7 @@ public abstract class CameraActivity extends AppCompatActivity
   protected TextView frameValueTextView, cropValueTextView, inferenceTimeTextView;
   protected ImageView bottomSheetArrowImageView;
   private ImageView plusImageView, minusImageView;
-  private SwitchCompat apiSwitchCompat;
+  private Spinner delegateSpinner;
   private TextView threadsTextView;
 
   @Override
@@ -93,7 +91,7 @@ public abstract class CameraActivity extends AppCompatActivity
     threadsTextView = findViewById(R.id.threads);
     plusImageView = findViewById(R.id.plus);
     minusImageView = findViewById(R.id.minus);
-    apiSwitchCompat = findViewById(R.id.api_info_switch);
+    delegateSpinner = findViewById(R.id.delegateSpinner);
     bottomSheetLayout = findViewById(R.id.bottom_sheet_layout);
     gestureLayout = findViewById(R.id.gesture_layout);
     sheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
@@ -150,7 +148,7 @@ public abstract class CameraActivity extends AppCompatActivity
     cropValueTextView = findViewById(R.id.crop_info);
     inferenceTimeTextView = findViewById(R.id.inference_info);
 
-    apiSwitchCompat.setOnCheckedChangeListener(this);
+    delegateSpinner.setOnItemSelectedListener(this);
 
     plusImageView.setOnClickListener(this);
     minusImageView.setOnClickListener(this);
@@ -483,13 +481,22 @@ public abstract class CameraActivity extends AppCompatActivity
         return 0;
     }
   }
-
+  
   @Override
-  public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-    setUseNNAPI(isChecked);
-    if (isChecked) apiSwitchCompat.setText("NNAPI");
-    else apiSwitchCompat.setText("TFLITE");
+  public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+    if (adapterView == delegateSpinner) {
+      final String delegate = (String) delegateSpinner.getSelectedItem();
+      switch (delegate) {
+        case "CPU": setUseCPU(); break;
+        case "GPU": setUseGPU(); break;
+        case "NNAPI": setUseNNAPI(); break;
+        case "XNNPACK": setUseXNNPack(); break;
+      }
+    }
   }
+  
+  @Override
+  public void onNothingSelected(AdapterView<?> adapterView) {}
 
   @Override
   public void onClick(View v) {
@@ -534,5 +541,11 @@ public abstract class CameraActivity extends AppCompatActivity
 
   protected abstract void setNumThreads(int numThreads);
 
-  protected abstract void setUseNNAPI(boolean isChecked);
+  protected abstract void setUseCPU();
+  
+  protected abstract void setUseGPU();
+  
+  protected abstract void setUseXNNPack();
+  
+  protected abstract void setUseNNAPI();
 }
