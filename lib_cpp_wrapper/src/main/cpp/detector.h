@@ -8,8 +8,6 @@
 #include <cstddef>
 
 #include <memory>
-#include <string>
-#include <vector>
 
 #include "tensorflow/lite/c/common.h"
 #include "tensorflow/lite/delegates/gpu/delegate.h"
@@ -86,8 +84,6 @@ class Detector {
 
   int num_thread_ = 2;
   BUILD_TYPE build_type_ = kCPU;
-
-  std::vector<std::string> labels_;
 };
 
 } // namespace seeso
