@@ -180,7 +180,9 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginTop="10dp"
-            android:entries="@array/delegates" />
+            android:entries="@array/delegates"
+            android:spinnerMode="dropdown"
+            android:theme="@style/ThemeOverlay.AppCompat.Light" />
 
         <!--        <androidx.appcompat.widget.SwitchCompat-->
         <!--            android:id="@+id/api_info_switch"-->

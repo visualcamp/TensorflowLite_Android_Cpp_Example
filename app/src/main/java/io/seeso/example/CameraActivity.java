@@ -485,6 +485,9 @@ public abstract class CameraActivity extends AppCompatActivity
   @Override
   public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
     if (adapterView == delegateSpinner) {
+      // In some devices, onItemSelected() is called before onPreviewSizeChosen()
+      if (!isDetectorInitialized())
+        return;
       final String delegate = (String) delegateSpinner.getSelectedItem();
       switch (delegate) {
         case "CPU": setUseCPU(); break;
@@ -541,6 +544,8 @@ public abstract class CameraActivity extends AppCompatActivity
 
   protected abstract void setNumThreads(int numThreads);
 
+  protected abstract boolean isDetectorInitialized();
+  
   protected abstract void setUseCPU();
   
   protected abstract void setUseGPU();
