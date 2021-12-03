@@ -6,6 +6,6 @@ dependencyResolutionManagement {
         jcenter() // Warning: this repository is going to shut down soon
     }
 }
-rootProject.name = "TensorflowLite_Android_Cpp_Example"
+rootProject.name = "TFLite C++ Object Detection Demo App"
 include ':app'
 include ':lib_cpp_wrapper'
