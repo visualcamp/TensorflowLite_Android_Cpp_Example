@@ -17,14 +17,20 @@ add_library(seeso_tfl_cpp_native
 
 find_library(log-lib z log)
 
-add_subdirectory(third_party/opencv)
+# Find OpenCV
+set( OpenCV_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third_party/OpenCV-android-sdk/sdk/native/jni" )
+find_package(OpenCV REQUIRED)
+
+# Add TFLite
 add_subdirectory(third_party/tflite)
 
 
 target_link_libraries(seeso_tfl_cpp_native
         ${log-lib}
-        opencv
         z
         log
+        ${OpenCV_LIBS}
         tflite
         )
+
+target_include_directories(seeso_tfl_cpp_native INTERFACE "${OPENCV_INCLUDE_PATH}")
