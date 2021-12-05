@@ -10,8 +10,6 @@
 #include <sstream>
 #include <string>
 
-#include "detector.h"
-
 #include "tensorflow/lite/c/common.h"
 #include "tensorflow/lite/delegates/gpu/delegate.h"
 #include "tensorflow/lite/delegates/nnapi/nnapi_delegate.h"
@@ -20,6 +18,7 @@
 #include "tensorflow/lite/interpreter_builder.h"
 #include "tensorflow/lite/model_builder.h"
 
+#include "detector.h"
 #include "log.h"
 
 inline void dummy() {};
@@ -67,6 +66,7 @@ void PrintModelInfo(const tflite::Interpreter* interpreter) {
   Log.v(ss.str());
 }
 
+
 } // anonymous namespace
 
 bool Detector::loadModel(const char* buffer, std::size_t buffer_size) {
@@ -84,13 +84,13 @@ bool Detector::buildInterpreter() {
 
   if (build_type_ == kNNAPI) {
     nnapi_delegate_ = std::make_unique<tflite::StatefulNnApiDelegate>();
-    interpreter_->ModifyGraphWithDelegate(nnapi_delegate_.get());
+    RETURN_FALSE_IF_TF_FAIL(interpreter_->ModifyGraphWithDelegate(nnapi_delegate_.get()));
   } else if (build_type_ == kGPU) {
     gpu_delegate_.reset(TfLiteGpuDelegateV2Create(&gpu_options_));
-    interpreter_->ModifyGraphWithDelegate(gpu_delegate_.get());
+    RETURN_FALSE_IF_TF_FAIL(interpreter_->ModifyGraphWithDelegate(gpu_delegate_.get()));
   } else if (build_type_ == kXNNPack) {
     xnn_delegate_.reset(TfLiteXNNPackDelegateCreate(&xnn_options_));
-    interpreter_->ModifyGraphWithDelegate(xnn_delegate_.get());
+    RETURN_FALSE_IF_TF_FAIL(interpreter_->ModifyGraphWithDelegate(xnn_delegate_.get()));
   }
 
   RETURN_FALSE_IF_TF_FAIL(interpreter_->AllocateTensors())

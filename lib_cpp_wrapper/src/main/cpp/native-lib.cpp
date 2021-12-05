@@ -45,11 +45,11 @@ Java_io_seeso_lib_1cpp_1wrapper_Detector_nativeDetectorLoadModel
   return success;
 }
 
-extern "C" JNIEXPORT void JNICALL
+extern "C" JNIEXPORT jboolean JNICALL
 Java_io_seeso_lib_1cpp_1wrapper_Detector_nativeBuildInterpreter
     (JNIEnv* env, jobject thiz, jlong obj)
 {
-  detector(obj)->buildInterpreter();
+  return detector(obj)->buildInterpreter();
 }
 
 extern "C"
@@ -58,13 +58,6 @@ Java_io_seeso_lib_1cpp_1wrapper_Detector_nativeResetInterpreter
     (JNIEnv* env, jobject thiz, jlong obj)
 {
   detector(obj)->resetInterpreter();
-}
-
-extern "C" JNIEXPORT jboolean JNICALL
-Java_io_seeso_lib_1cpp_1wrapper_Detector_nativeIsProcessing
-    (JNIEnv* env, jobject thiz, jlong obj)
-{
-  return true;
 }
 
 extern "C" JNIEXPORT void JNICALL

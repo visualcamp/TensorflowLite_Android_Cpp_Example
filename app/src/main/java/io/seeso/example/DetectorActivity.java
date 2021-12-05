@@ -236,7 +236,15 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     runInBackground(
       () -> {
         try {
+          runOnUiThread(
+            () -> {
+              Toast.makeText(this, "Building interpreter for " + name, Toast.LENGTH_SHORT).show();
+            });
           func.run();
+          runOnUiThread(
+            () -> {
+              Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show();
+            });
         } catch (UnsupportedOperationException e) {
           LOGGER.e(e, "Failed to set \"Use " + name + "\".");
           runOnUiThread(

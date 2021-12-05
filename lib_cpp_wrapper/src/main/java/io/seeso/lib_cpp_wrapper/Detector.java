@@ -63,7 +63,9 @@ public class Detector {
   
   public void buildInterpreter() {
     nativeDetectorLoadModel(nativeObj, modelBuffer, modelBuffer.length);
-    nativeBuildInterpreter(nativeObj);
+    boolean success = nativeBuildInterpreter(nativeObj);
+    if (!success)
+      throw new RuntimeException("Failed to build interpreter. See logs for more info");
   }
   
   public void rebuildInterpreter() {
@@ -91,10 +93,6 @@ public class Detector {
   public void setUseXNNPack() {
     nativeSetUseXNNPack(nativeObj);
     rebuildInterpreter();
-  }
-  
-  public boolean isProcessing() {
-    return nativeIsProcessing(nativeObj);
   }
   
   private RectF getBoundingBox(float top, float left, float bottom, float right, int w, int h) {
@@ -263,9 +261,8 @@ public class Detector {
   private native long nativeDetector();
   private native void nativeDetectorDelete(long obj);
   private native boolean nativeDetectorLoadModel(long obj, byte[] buffer, long buffer_size);
-  private native void nativeBuildInterpreter(long obj);
+  private native boolean nativeBuildInterpreter(long obj);
   private native void nativeResetInterpreter(long obj);
-  private native boolean nativeIsProcessing(long obj);
   private native void nativeSetNumThreads(long obj, int num);
   private native void nativeSetUseCPU(long obj);
   private native void nativeSetUseGPU(long obj);
