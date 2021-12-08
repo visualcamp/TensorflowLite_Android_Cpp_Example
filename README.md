@@ -7,7 +7,7 @@ Modified version of [TFLite Object Detection Demo App](https://github.com/tensor
 
 ## Introduction
 Prebuilt libraries including TensorFlow Lite and OpenCV is needed.  
-See our tech blog for full instructions.
+See our [tech blog](https://blog.seeso.io/running-tensorflow-lite-c-in-android-3ff01d42be07) for full instructions.
 
 ## Notes
 * Initializing can take several seconds depending on your devices.
